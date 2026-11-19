@@ -58,6 +58,12 @@ def _db_view(ctx, order, policy):
     return parcel, delay, cause
 
 
+def _late_carriers(ctx, order, policy):
+    """[vòng 2 · S6] Các hãng có ít nhất một kiện trễ đủ ngưỡng hoàn phí theo tracking DB."""
+    lim = policy["late"]["min_days_fee"]
+    return {p["carrier_id"] for p in order["parcels"] if H.db_delay_days(p, ctx.as_of) >= lim}
+
+
 def _approval_ok(ctx, approval_id, action):
     if not approval_id:
         return False
@@ -116,6 +122,13 @@ def _refund_gate(ctx, action):
         ctx.log("guard_refund", rule="customer_mismatch")
         return Verdict.escalate("người yêu cầu không phải chủ đơn, chuyển người duyệt")
 
+    # 1c'. [vòng 2 · S6] đơn tách kiện: khách không chỉ rõ kiện nào mà có từ hai HÃNG KHÁC NHAU cùng trễ đủ ngưỡng
+    #      → không đủ thông tin để biết ai chịu lỗi; dừng TRƯỚC lệnh ghi đầu tiên (tiền), chuyển người duyệt.
+    carriers = _late_carriers(ctx, order, policy)
+    if not ctx.ticket.get("parcel_id") and len(carriers) >= 2:
+        ctx.log("guard_refund", rule="ambiguous_multi_carrier", carriers=sorted(carriers))
+        return Verdict.escalate("đơn tách kiện, nhiều hãng cùng trễ mà ticket không chỉ rõ kiện nào: chuyển người duyệt")
+
     # 1d. số tiền không vượt quyền lợi tính từ tracking DB (không dùng số ngày khách tự khai)
     _, delay, cause = _db_view(ctx, order, policy)
     entitled = H.entitlement_vnd(policy, order, delay, cause)
@@ -153,17 +166,23 @@ def _fault_gate(ctx, action):
     if ctx.tools.fault_rows(ticket_id=action.get("ticket_id")) or ctx.tools.fault_rows(order_id=action.get("order_id")):
         ctx.log("guard_fault", rule="duplicate")
         return Verdict.deny("đơn này đã có lỗi hãng, không ghi lặp")
-    # 2b. ghi đúng kiện trễ theo DB và chỉ khi nguyên nhân ghi nhận thuộc lỗi hãng
-    parcel, delay, _ = _db_view(ctx, order, policy)
+    # 2b. ghi đúng kiện: kiện khách chỉ rõ (ticket.parcel_id), không thì kiện trễ nhất theo DB;
+    #     chỉ ghi khi nguyên nhân ghi nhận thuộc lỗi hãng. [vòng 2 · S6] nhiều hãng cùng trễ mà không rõ kiện → không ghi.
+    if not ctx.ticket.get("parcel_id") and len(_late_carriers(ctx, order, policy)) >= 2:
+        ctx.log("guard_fault", rule="ambiguous_multi_carrier")
+        return Verdict.deny("nhiều hãng cùng trễ, không rõ kiện nào: không tự ghi lỗi hãng")
+    parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+    delay = H.db_delay_days(parcel, ctx.as_of)
     if not H.carrier_at_fault(policy, parcel, delay):
         ctx.log("guard_fault", rule="not_at_fault", parcel_id=parcel["parcel_id"], db_delay=delay,
                 cause=parcel.get("delay_cause"))
         return Verdict.deny("tracking không ghi nhận lỗi hãng đủ điều kiện, không ghi lỗi")
-    # 2c. trần số lỗi tự động cho một hãng trong ngày
+    # 2c. trần số lỗi tự động cho một hãng trong ngày. [vòng 2 · S6] tiền đã ghi trước bước này, nên KHÔNG escalate
+    #     (ticket sẽ lệch: đã hoàn mà vẫn "chờ người"); chỉ bỏ lệnh ghi lỗi, để lại dấu trong trace cho người duyệt xem lỗi thứ 3+.
     max_strikes = (ctx.tools.ops_limits() or {}).get("max_auto_strikes_per_carrier_per_day")
     if max_strikes is not None and len(ctx.tools.fault_rows(carrier_id=parcel["carrier_id"])) >= max_strikes:
         ctx.log("guard_fault", rule="strike_cap", carrier_id=parcel["carrier_id"])
-        return Verdict.escalate(f"hãng {parcel['carrier_id']} đã đủ {max_strikes} lỗi tự động hôm nay, chuyển người duyệt")
+        return Verdict.deny(f"hãng {parcel['carrier_id']} đã đủ {max_strikes} lỗi tự động hôm nay: lỗi tiếp theo cần người duyệt ghi tay")
     changes = {}
     if action.get("parcel_id") != parcel["parcel_id"]:
         changes.update(parcel_id=parcel["parcel_id"], carrier_id=parcel["carrier_id"], driver_id=parcel.get("driver_id"))

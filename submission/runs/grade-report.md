@@ -1,9 +1,9 @@
-# Tự kiểm tra sự cố S6 · FAIL
+# Tự kiểm tra sự cố S6 · PASS-VISIBLE (chưa chạy test ẩn)
 
 *Đây là kết quả TỰ KIỂM TRA của bàn, không phải điểm. Bài được một team chấm tự động chấm lại sau buổi học.*
 
-- Mã lần chạy: `R-S6-grade-20261119-161802-e2825f` · bàn: `K5-L3B-DAY10-Zentus-PoCtoPilotGate1` · grader `lab10-1.0` · 0.742s
-- Ba mốc: base `R-S6-before-20261119-161803-e2825f` · prepared `R-S6-prepared-20261119-161803-e2825f` · after `R-S6-after-20261119-161803-e2825f` (report + trace trong runs/)
+- Mã lần chạy: `R-S6-grade-20261119-164020-e2825f` · bàn: `K5-L3B-DAY10-Zentus-PoCtoPilotGate1` · grader `lab10-1.0` · 0.656s
+- Ba mốc: base `R-S6-before-20261119-164020-e2825f` · prepared `R-S6-prepared-20261119-164020-e2825f` · after `R-S6-after-20261119-164020-e2825f` (report + trace trong runs/)
 - Mốc prepared (cổng vòng 1): đã chốt `3c132c2e`, còn nguyên
 - Hash code đội (guards + monitors + switches + cổng vận hành): `e2825f1b0161`
 - Hash Bản tiêu chí chấp nhận: `45296e79cdb4` · đã ký: `45296e79cdb4` · KHÔNG ĐỔI
@@ -11,7 +11,7 @@
 
 | Kiểm | Kết quả | Chi tiết |
 |---|---|---|
-| 1 integrity | ❌ | file khoá bị đổi: ['data/tickets.jsonl', 'data/world.json', 'incidents/S6/card.json', 'incidents/S6/card.md', 'incidents/S6/tickets.jsonl', 'incidents/S6/world_patch.json', 'lab10/__init__.py', 'lab10/_gradectx.py', 'lab10/_noop_guards.py', 'lab10/agent.py', 'lab10/check_submission.py', 'lab10/checkpoint.py', 'lab10/criteria.py', 'lab10/eval.py', 'lab10/gate.py', 'lab10/grade.py', 'lab10/helpers.py', 'lab10/mock_llm.py', 'lab10/ops.py', 'lab10/tools.py', 'lab10/trace.py', 'lab10/world.py', 'tests/test_public.py'] |
+| 1 integrity | ✅ | file khoá bị đổi: không |
 | 2 criteria | ✅ | đã ký, còn nguyên |
 | 3 visible | ✅ | base có vấn đề: True; after sạch: True; ticket còn hỏng: không; trần còn vượt: không |
 | 4 hidden | — | máy này không có bài kiểm tra ẩn (team chấm sẽ chạy sau buổi học) |

@@ -1,12 +1,12 @@
 {
-  "team": "",
-  "members": [],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "team": "K5-L3B-DAY10-Zentus-PoCtoPilotGate1",
+  "members": ["TrinhGiaHuy-2A202603924", "TranBaoLong-2A202604012"],
+  "incident": "S6",
+  "decision_v1": "Tiếp tục",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Tracking DB của từng hãng ghi đúng ngày giao và nguyên nhân trễ của từng kiện, và khi khách chỉ rõ mã kiện thì mã đó đúng; cổng của đội tin hoàn toàn hai nguồn này để quyết ai chịu lỗi.",
+    "reduce_or_prevent": "Ngăn được việc hệ thống tự ghi lỗi cho kiện không trễ hoặc tự chọn hãng khi nhiều hãng cùng trễ (cổng tính lại kiện từ tracking và dừng trước lệnh hoàn), nhưng chỉ GIẢM tác hại chung: trần 2 lỗi/hãng/ngày vẫn cho 2 lỗi đầu tự động, và nếu tracking hoặc parcel_id sai thì cổng vẫn ghi sai theo.",
+    "measure_in_pilot": "Tỉ lệ đơn tách kiện nhiều hãng và số ca \"không rõ kiện\" chuyển người mỗi ngày (ảnh hưởng hàng chờ và chi phí), số khiếu nại lỗi oan từ hãng mỗi tuần, và độ chính xác của delay_cause trong tracking từng hãng so với đối soát của kế toán."
   }
 }
