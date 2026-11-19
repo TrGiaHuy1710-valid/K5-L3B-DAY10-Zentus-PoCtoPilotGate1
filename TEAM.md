@@ -110,9 +110,10 @@ Sản phẩm và kinh doanh · Vận hành và pháp lý. Câu 1.1–1.6 (Phiế
 
 ### Bằng chứng
 
-- Commit: `c819e83` (Sign acceptance criteria), `4e7b70b` (criteria report), `c8df97a` (Chốt cổng vòng 1, quyết định v1), `ba88ae6` (Bài nộp), `cf7b4e1` (khôi phục cổng vòng 2, monitor, Phiếu C; TEAM.md).
+- Commit cá nhân: `05d1b1e` (`TEAM.md`).
 - Tiêu chí hash `45296e79` (ký trước khi đo `base`); chốt vòng 1 `3c132c2e`.
-- Phiếu A mục A1–A5; Phiếu B mục B3–B5, B7.4–B7.6, B8; Phiếu C mục C5, C10–C12; `config/acceptance_criteria.json`, `config/operating_gates.json`, `submission/submission.json`.
+- Mã lần chạy đối chiếu cho quyết định v1, v2: `R-base-prepared-20261119-152542-2b41c3`, `R-S6-after-20261119-161405-e2825f`, `R-base-after-20261119-161357-e2825f`.
+- Phiếu A mục A1–A5; Phiếu B mục B3–B5, B7.4–B7.6 (có tên người viết ở B7.5), B8; Phiếu C mục C5, C10–C12; `config/acceptance_criteria.json`, `config/operating_gates.json`, `submission/submission.json`.
 
 ### Exit ticket
 
