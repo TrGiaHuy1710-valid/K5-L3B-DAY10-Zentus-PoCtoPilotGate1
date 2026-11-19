@@ -49,7 +49,10 @@ Tự kiểm tra: `PASS-VISIBLE`. Quyết định v1: Tiếp tục (có điều k
 - Sửa lỗi kiểu xuống dòng CRLF làm hỏng kiểm tra integrity trên máy Windows.
 
 **Sản phẩm và kinh doanh · Vận hành và pháp lý · Trần Bảo Long**
-- 
+- Xác định mục tiêu cấp hệ thống, thước đo telemetry production, tiêu chí chấp nhận và ký `config/acceptance_criteria.json` trước khi chạy đánh giá (Phiếu A mục A1–A5).
+- Lập bản đồ dữ liệu, ví dụ drift, HAZOP phần ngoài kỹ thuật và checklist 9 nhóm có PIC (Phiếu B mục B3–B5).
+- Đặt con số cổng kinh doanh, vận hành, pháp lý trong `config/operating_gates.json` và viết Runbook phần 1–3, mục Giờ cao điểm (B7.4–B7.6).
+- Tham gia quyết định v1 (B8), cập nhật giả định môi trường, risk register, checklist và Runbook 4–5 sau thẻ S6, rồi chốt quyết định v2, ba dòng bắt buộc và `submission/submission.json` (Phiếu C mục C5, C10–C12).
 
 ## Cá nhân
 
@@ -99,21 +102,20 @@ Sản phẩm và kinh doanh · Vận hành và pháp lý. Câu 1.1–1.6 (Phiế
 
 ### Đóng góp cụ thể
 
-<!-- Long tự viết: việc mình đã làm, con số mình chọn và lý do (bàn phải giải thích được lúc demo). -->
-- Ngưỡng trong `config/acceptance_criteria.json`: …
-- Con số trong `config/operating_gates.json` (`business`, `operations`, `legal`): …
-- Runbook 1–5, giờ cao điểm: …
-- Quyết định v1, v2: …
-- Dùng AI cho phần nào: …
+- Ngưỡng trong `config/acceptance_criteria.json`: đặt ba ngưỡng an toàn (`wrongful_refund_vnd_max`, `wrongful_carrier_faults_max`, `pii_leaks_max`) bằng `0` vì mỗi lỗi sai đều gây thiệt hại trực tiếp cho LogiX, hãng vận chuyển hoặc vi phạm pháp lý; `pass_rate_min = 0.9` và `pass_k_min = 0.85` (110 lần chạy có khoảng tin cậy ±5% nên không siết quá chặt); `escalation_rate_max = 0.25`, `cost_per_ticket_vnd_max = 7000` (thấp hơn làm tay 10.000đ), `roi_min = 0.3`, `queue_stuck_max = 0`, kèm 4 quy tắc `decision_rule` rõ ràng.
+- Con số trong `config/operating_gates.json` (`business`, `operations`, `legal`): `daily_refund_cap_vnd = 1500000` (75% ngân sách Finance 2.000.000đ/ngày, chừa 500.000đ cho ca duyệt tay), `cost_budget_per_ticket_vnd = 1500`, `pilot_scope = all (100%)`, `roi_min = 0.3`; `reviewers_on_shift = 1` (NV-HANH, công suất 6 ca/giờ, `max_queue_wait_minutes = 60`), PIC `NV-TUNG`, 4 `stop_conditions` (tắt trong 15 phút), kênh `#logix-refund-pilot-oncall`; chặn 6 trường PII gửi bên thứ ba và bật `carrier_fault_requires_recorded_cause = true`.
+- Runbook 1–5, giờ cao điểm: phân rõ 4 vai (NV-TUNG giữ công tắc/PIC, NV-HANH duyệt vượt hạn mức, NV-OANH nhận khiếu nại hãng/shop), bảng tín hiệu VÀNG/ĐỎ khớp report và 3 monitor mới; giờ cao điểm (ngày sale, sau bão) nâng lên 2 người trực khi hàng chờ ≥ 6 ca hoặc chờ ≥ 30 phút (phí giữ chỗ 30.000đ/ca); Runbook 4–5 bổ sung quy trình NV-OANH huỷ lỗi oan với hãng Sông Hồng trong 2 ngày làm việc và 3 kịch bản ứng phó tuần đầu pilot.
+- Quyết định v1, v2: v1 chọn **Tiếp tục** (có điều kiện chờ thẻ sự cố) dựa trên `R-base-prepared-20261119-152542-2b41c3` đạt 9/9 ngưỡng; v2 giữ **Tiếp tục** vì sau sửa vòng 2, thẻ S6 (`R-S6-after-20261119-161405-e2825f`) và bộ nền (`R-base-after-20261119-161357-e2825f`) đều đạt mọi ngưỡng, hoàn sai = 0, lỗi oan = 0, ROI = 1.08.
+- Dùng AI cho phần nào: dùng trợ lý AI để rà soát sự nhất quán giữa các con số trong `config/`, runbook và các mục Phiếu A, B, C, cũng như hỗ trợ tổng hợp nháp mục cá nhân từ kết quả repo; toàn bộ ngưỡng, lý do kinh doanh/vận hành và quyết định Gate 1 đã được kiểm tra đối chiếu lại với `data/world.json` và report trước khi giữ.
 
 ### Bằng chứng
 
-<!-- Mã commit, mã lần chạy, dòng trong phiếu. -->
-- Commit: …
-- Phiếu A mục …; Phiếu B mục …; Phiếu C mục …
+- Commit: `c819e83` (Sign acceptance criteria), `4e7b70b` (criteria report), `c8df97a` (Chốt cổng vòng 1, quyết định v1), `ba88ae6` (Bài nộp), `cf7b4e1` (khôi phục cổng vòng 2, monitor, Phiếu C; TEAM.md).
+- Tiêu chí hash `45296e79` (ký trước khi đo `base`); chốt vòng 1 `3c132c2e`.
+- Phiếu A mục A1–A5; Phiếu B mục B3–B5, B7.4–B7.6, B8; Phiếu C mục C5, C10–C12; `config/acceptance_criteria.json`, `config/operating_gates.json`, `submission/submission.json`.
 
 ### Exit ticket
 
-Học được: …
+Học được: tiêu chí chấp nhận phải được chốt và ký trước khi xem kết quả đo để tránh chỉnh ngưỡng theo số; một Gate 1 đạt chuẩn không chỉ nằm ở code chặn lỗi mà còn ở trần tiền, công suất người trực, quy trình xử lý sự cố với bên thứ ba và điều kiện dừng rõ ràng.
 
-Chưa chắc: …
+Chưa chắc: khi chạy pilot thật với lượng ticket biến động mạnh (ngày sale hoặc sau bão), tỉ lệ ca chuyển người từ đơn tách kiện nhiều hãng có làm quá tải 1 người trực (6 ca/giờ) và kéo ROI xuống dưới 0.3 hay không, cần theo dõi sát qua tuần đầu.
