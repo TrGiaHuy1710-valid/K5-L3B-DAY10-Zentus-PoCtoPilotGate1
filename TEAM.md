@@ -2,10 +2,10 @@
 
 ## Thông tin nhóm
 
-- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng):
-- Lớp: `L3A` / `L3B`
-- Repo của bàn: `K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1`
-- Thẻ sự cố đã bốc (S1–S8):
+- Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): Zentus
+- Lớp: `L3B`
+- Repo của bàn: https://github.com/TrGiaHuy1710-valid/K5-L3B-DAY10-Zentus-PoCtoPilotGate1
+- Thẻ sự cố đã bốc (S1–S8): S6
 
 ## Thành viên
 
@@ -13,12 +13,11 @@ Họ tên đầy đủ và MSSV của **mọi** thành viên; bàn 3 người th
 
 | STT | Họ và tên | MSSV | Vai | Trưởng nhóm |
 | --: | --------- | ---- | --- | :---------: |
-|   1 |           |      |     |             |
-|   2 |           |      |     |             |
-|   3 |           |      |     |             |
-|   4 |           |      |     |             |
+|   1 |Trịnh Gia Huy|2A202603924 ||X|
+|   2 |Trần Bảo Long |2A202604012|     |             |
 
-Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, khớp bảng trên.
+
+
 
 ## Cá nhân
 
